@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form to Google Sheets</title>
+</head>
+<body>
+  <h1>Submit Data</h1>
+  <form id="myForm">
+    <label>Name:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Message:</label><br>
+    <textarea name="message" required></textarea><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxLxNJugo0e__oMMxzjoWH-vgURPLlPQfbQbqs8PVSi2C1doNKmKXfS40gIufT6Ryn2yQ/exec";
+
+    document.getElementById("myForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const formData = {
+        name: this.name.value,
+        email: this.email.value,
+        message: this.message.value
+      };
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("status").innerText = data.message;
+        this.reset();
+      })
+      .catch(err => {
+        document.getElementById("status").innerText = "Error: " + err;
+      });
+    });
+  </script>
+</body>
+</html>
